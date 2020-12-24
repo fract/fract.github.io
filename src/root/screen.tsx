@@ -227,6 +227,10 @@ class Matrix {
         return yield* generator.call(this)
     }
 
+    get(x: number, y: number) {
+        return this.threads[y * this.width + x]
+    }
+
     // getThread(index: number) {
     //     const { threads } = this
 
@@ -382,16 +386,16 @@ class Rect extends Layer {
                 const set = new Set<Thread>()
 
                 for (let _x = x; _x < x + w; _x++) {
-                    set.add(this.threads[y * this.width + _x])
+                    set.add(this.get(_x, y))
                 }
 
                 for (let _y = y + 1; _y < y + h - 1; _y++) {
-                    set.add(this.threads[_y * this.width + x])
-                    set.add(this.threads[_y * this.width + x + w - 1])
+                    set.add(this.get(x, _y))
+                    set.add(this.get(x + w - 1, _y))
                 }
 
                 for (let _x = x; _x < x + w; _x++) {
-                    set.add(this.threads[(y + h - 1) * this.width + _x])
+                    set.add(this.get(_x, y + h - 1))
                 }
 
                 return set
