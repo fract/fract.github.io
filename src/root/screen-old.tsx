@@ -369,21 +369,6 @@ class Eye extends Fractal<HTMLDivElement[]> {
             }
 
             yield (equalArr(items) as any) as HTMLDivElement[]
-
-            // let i = 0
-
-            // for (const foton of yield* this.matrix) {
-            //     this.pixels[i++].fire(foton)
-            // }
-
-            // const view = new Set<T>()
-
-            // for (const pixel of this.pixels) {
-            //     view.add(yield* pixel)
-            // }
-
-            // yield (equalSet(view) as any) as Set<T>
-            // eye sleep for the next loop
         }
     }
 }

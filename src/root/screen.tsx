@@ -382,6 +382,75 @@ class Rect extends Layer {
                 const set = new Set<Thread>()
 
                 for (let _x = x; _x < x + w; _x++) {
+                    set.add(this.threads[y * this.width + _x])
+                }
+
+                for (let _y = y + 1; _y < y + h - 1; _y++) {
+                    set.add(this.threads[_y * this.width + x])
+                    set.add(this.threads[_y * this.width + x + w - 1])
+                }
+
+                for (let _x = x; _x < x + w; _x++) {
+                    set.add(this.threads[(y + h - 1) * this.width + _x])
+                }
+
+                return set
+            })
+        }
+    }
+}
+
+class FilledRect extends Layer {
+    matrix!: Matrix
+    readonly x: Conse<number>
+    readonly y: Conse<number>
+    readonly w: Conse<number>
+    readonly h: Conse<number>
+    readonly color = conse('00000000')
+
+    constructor(x: number, y: number, w: number, h: number) {
+        super()
+        this.x = conse(x)
+        this.y = conse(y)
+        this.w = conse(w)
+        this.h = conse(h)
+    }
+
+    setMatrix(matrix: Matrix) {
+        this.matrix = matrix
+    }
+
+    *portal({ r, g, b, a }: Foton) {
+        const color = yield* this.color
+
+        r += channel(color, 0)
+        g += channel(color, 1)
+        b += channel(color, 2)
+        a += channel(color, 3)
+
+        if (r > 255) r = 255
+        if (g > 255) g = 255
+        if (b > 255) b = 255
+        if (a > 255) a = 255
+
+        return { r, g, b, a }
+    }
+
+    *whatsUp(ctx: Context /**, pixel?: Pixel */) {
+        //const matrix = ctx.get(MatrixQuery)!
+
+        while (true) {
+            const x = yield* this.x
+            const y = yield* this.y
+            const w = yield* this.w
+            const h = yield* this.h
+
+            yield yield* this.matrix.say(function* (this: Matrix) {
+                // кто сказал say тот и this - т.е. this: Matrix
+                // я в матрице :) сам беру что мне надо
+                const set = new Set<Thread>()
+
+                for (let _x = x; _x < x + w; _x++) {
                     for (let _y = y; _y < y + h; _y++) {
                         // console.log('GET', x, y, w, h, _y * w + _x)
                         set.add(this.threads[_y * this.width + _x])
@@ -394,10 +463,10 @@ class Rect extends Layer {
     }
 }
 
-const display = new Display(40, 30)
-const rect1 = new Rect(2, 2, 15, 10)
-const rect2 = new Rect(10, 10, 15, 10)
-const rect3 = new Rect(5, 5, 15, 10)
+const display = new Display(60, 120)
+const rect1 = new Rect(2, 2, 14, 10)
+const rect2 = new Rect(10, 10, 14, 10)
+const rect3 = new Rect(5, 5, 14, 10)
 
 rect1.color.set('0000ff50')
 rect2.color.set('ff0000ff')
